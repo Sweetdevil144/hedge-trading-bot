@@ -1,0 +1,202 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User model - migrated from wallet_data.json
+model User {
+  id                   String         @id @default(cuid())
+  telegramId           String         @unique
+  publicKey            String
+  encryptedSecretKey   String         // AES-256 encrypted
+  createdAt            DateTime       @default(now())
+  updatedAt            DateTime       @updatedAt
+  seedPhraseBackedUp   Boolean        @default(false)
+  encryptedSeedPhrase  String?        // AES-256 encrypted, nullable
+
+  // Relations
+  positions            Position[]
+  transactions         Transaction[]
+  orders               Order[]
+
+  @@index([telegramId])
+  @@index([publicKey])
+}
+
+// Position model - track all trading positions (including hedge positions)
+model Position {
+  id                   String         @id @default(cuid())
+  userId               String
+  user                 User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Position details
+  positionType         PositionType   // LONG, SHORT, HEDGE
+  status               PositionStatus @default(OPEN)
+
+  // Token details
+  poolAddress          String
+  tokenMint            String
+  tokenSymbol          String
+  amount               Float
+  entryPrice           Float
+  currentPrice         Float?
+
+  // Hedge-specific (nullable for non-hedge positions)
+  hedgePositionId      String?        // Links long and short sides
+  hedgeRatio           Float?
+  isLongSide           Boolean?       // true for long, false for short
+
+  // P&L tracking
+  unrealizedPnl        Float          @default(0)
+  realizedPnl          Float          @default(0)
+  fees                 Float          @default(0)
+
+  // Timestamps
+  openedAt             DateTime       @default(now())
+  closedAt             DateTime?
+  updatedAt            DateTime       @updatedAt
+
+  // Relations
+  transactions         Transaction[]
+  orders               Order[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([hedgePositionId])
+  @@index([poolAddress])
+}
+
+// Transaction model - complete history of all blockchain transactions
+model Transaction {
+  id                   String            @id @default(cuid())
+  userId               String
+  user                 User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  positionId           String?
+  position             Position?         @relation(fields: [positionId], references: [id], onDelete: SetNull)
+
+  // Transaction details
+  signature            String            @unique
+  transactionType      TransactionType
+  status               TransactionStatus @default(PENDING)
+
+  // Amounts
+  fromToken            String?
+  toToken              String?
+  fromAmount           Float?
+  toAmount             Float?
+  fee                  Float             @default(0)
+
+  // Metadata
+  blockTime            DateTime?
+  slot                 BigInt?
+  errorMessage         String?
+  metadata             Json?             // Additional flexible data
+
+  createdAt            DateTime          @default(now())
+  updatedAt            DateTime          @updatedAt
+
+  @@index([userId])
+  @@index([signature])
+  @@index([transactionType])
+  @@index([status])
+  @@index([createdAt])
+}
+
+// Order model - track pending and executed orders
+model Order {
+  id                   String         @id @default(cuid())
+  userId               String
+  user                 User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  positionId           String?
+  position             Position?      @relation(fields: [positionId], references: [id], onDelete: SetNull)
+
+  // Order details
+  orderType            OrderType
+  side                 OrderSide
+  status               OrderStatus    @default(PENDING)
+
+  // Token details
+  tokenMint            String
+  tokenSymbol          String
+  amount               Float
+  price                Float?         // null for market orders
+
+  // Execution details
+  filledAmount         Float          @default(0)
+  averagePrice         Float?
+
+  // Timestamps
+  createdAt            DateTime       @default(now())
+  executedAt           DateTime?
+  cancelledAt          DateTime?
+  expiresAt            DateTime?
+  updatedAt            DateTime       @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@index([orderType])
+  @@index([createdAt])
+}
+
+// Enums
+enum PositionType {
+  LONG
+  SHORT
+  HEDGE
+}
+
+enum PositionStatus {
+  OPEN
+  CLOSED
+  LIQUIDATED
+}
+
+enum TransactionType {
+  DEPOSIT
+  WITHDRAW
+  MINT
+  REDEEM
+  SWAP
+  POOL_DEPOSIT
+  POOL_WITHDRAW
+  TRANSFER
+}
+
+enum TransactionStatus {
+  PENDING
+  CONFIRMED
+  FAILED
+}
+
+enum OrderType {
+  MARKET
+  LIMIT
+  STOP_LOSS
+  TAKE_PROFIT
+}
+
+enum OrderSide {
+  BUY
+  SELL
+}
+
+enum OrderStatus {
+  PENDING
+  PARTIAL
+  FILLED
+  CANCELLED
+  EXPIRED
+  FAILED
+}
