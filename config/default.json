@@ -1,0 +1,86 @@
+{
+  "network": {
+    "default": "mainnet-beta",
+    "endpoints": {
+      "mainnet-beta": "https://api.mainnet-beta.solana.com",
+      "devnet": "https://api.devnet.solana.com",
+      "testnet": "https://api.testnet.solana.com",
+      "localnet": "http://localhost:8899"
+    }
+  },
+  "tokens": {
+    "mainnet": {
+      "USDC": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "USDT": "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
+      "USDI": "CXbKtuMVWc2LkedJjATZDNwaPSN6vHsuBGqYHUC4BN3B"
+    },
+    "devnet": {
+      "USDC": "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU",
+      "USDT": "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
+      "USDI": "CXbKtuMVWc2LkedJjATZDNwaPSN6vHsuBGqYHUC4BN3B"
+    }
+  },
+  "programs": {
+    "CLMM_PROGRAM_ID": "CAMMCzo5YL8w4VFF8KVHrK22GGUsp5VTaW7grrKgrWqK",
+    "POOL_STATE": "6bGe466weTDXkv8emyRMxFxLDQyXkE7W89zod8e5AGVe",
+    "AMM_CONFIG": "E64NGkDLLCdQ2yFNPcavaKptrEgmiQaNykUuLC1Qgwyp",
+    "OBSERVATION_STATE": "8JxwSBohQa42ahYntvoxR91LEvNL9g1232wa5cMRwW4z",
+    "INPUT_VAULT": "Abd1ehgfMAAhmmVrWENYYLUzNHQrQHtaazr2f1SD6HUE",
+    "OUTPUT_VAULT": "GrXCVwWjQavypEw41RDiCqQNzj9aEoEdmHG6QaRunjyX",
+    "OUTPUT_VAULT_2": "Ary4XMyk4vx2Jd9YGhXZPgR5FFPtKcNb7qPyPXQHBJ1m",
+    "ORCA_WHIRLPOOL_PROGRAM_ID": "whirLbG9ZzKfAwQ4CD6B8XvuHn34Ns2Jt6ZFM2ZrUzr"
+  },
+  "pools": {
+    "predefined": [
+      {
+        "label": "SOL/USDC",
+        "whirlpoolAddress": "Czfq3xZZDmsdGdUyrNLtRhGc47cXcZtLG4crryfu44zE"
+      },
+      {
+        "label": "WBTC/USDT",
+        "whirlpoolAddress": "B5EwJVDuAauzUEEdwvbuXzbFFgEYnUqqS37TUM1c4PQA"
+      }
+    ]
+  },
+  "trading": {
+    "slippage": {
+      "default": 0.5,
+      "max": 5.0,
+      "min": 0.1
+    },
+    "fees": {
+      "swap": 0.003,
+      "pool": 0.0025
+    },
+    "limits": {
+      "maxPositions": 10,
+      "maxOrdersPerPosition": 5,
+      "minTradeAmount": 1,
+      "maxTradeAmount": 100000
+    }
+  },
+  "hedge": {
+    "defaultRatio": 1.0,
+    "minRatio": 0.5,
+    "maxRatio": 2.0,
+    "rebalanceThreshold": 0.1,
+    "autoRebalance": false
+  },
+  "risk": {
+    "maxLeverage": 3.0,
+    "maxDrawdown": 0.2,
+    "stopLossPercent": 0.05,
+    "takeProfitPercent": 0.1,
+    "maxDailyLoss": 0.1
+  },
+  "database": {
+    "pool": {
+      "min": 2,
+      "max": 10
+    },
+    "timeout": 30000
+  },
+  "storage": {
+    "walletDataFile": "wallet_data.json"
+  }
+}
