@@ -261,20 +261,6 @@ SOLANA_NETWORK=devnet
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## Implementation Status
-
-See [IMPLEMENTATION_SUMMARY.md](./IMPLEMENTATION_SUMMARY.md) for complete details.
-
-## Documentation
-
-- **[README.md](./readme.md)** - This file (quick start and overview)
-- **[SETUP_GUIDE.md](./SETUP_GUIDE.md)** - Detailed setup instructions
-- **[CLI_REFERENCE.md](./CLI_REFERENCE.md)** - Complete CLI command reference
-- **[STRATEGIES.md](./STRATEGIES.md)** - Trading strategies guide
-- **[DOCKER.md](./DOCKER.md)** - Docker deployment guide
-- **[IMPLEMENTATION_SUMMARY.md](./IMPLEMENTATION_SUMMARY.md)** - Technical implementation details
-- **[INTERVIEW_GUIDE.md](./INTERVIEW_GUIDE.md)** - Project interview preparation
-
 ## Quick Links
 
 - **Start Trading:** `npm run cli -- hedge open SOL 1 --strategy delta-neutral`
